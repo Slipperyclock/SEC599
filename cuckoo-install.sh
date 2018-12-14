@@ -26,6 +26,10 @@ CUCKOO_GUEST_IMAGE="/tmp/W7-01.ova"
 CUCKOO_GUEST_NAME="vm"
 CUCKOO_GUEST_IP="192.168.87.15"
 INTERNET_INT_NAME="eth0"
+VOLATILITY_VERSION_LONG="volatility-2.6"
+VOLATILITY_VERSION_SHORT="2.6"
+START_SCRIPT="/root/cuckoo-start.sh"
+KILL_SCRIPT="/root/cuckoo-kill.sh"
 
 # Base variables. Only change these if you know what you are doing...
 SUDO="sudo"
@@ -33,9 +37,9 @@ TMPDIR=$(mktemp -d)
 RELEASE=$(lsb_release -cs)
 CUCKOO_USER="cuckoo"
 CUCKOO_PASSWD="cuckoo"
-CUSTOM_PKGS=""
+CUSTOM_PKGS="tor libguac-client-rdp0 libguac-client-vnc0 libguac-client-ssh0 guacd"
 ORIG_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )
-VOLATILITY_URL="http://downloads.volatilityfoundation.org/releases/2.4/volatility-2.4.tar.gz"
+VOLATILITY_URL="http://downloads.volatilityfoundation.org/releases/$VOLATILITY_VERSION_SHORT/$VOLATILITY_VERSION_LONG.tar.gz"
 YARA_REPO="https://github.com/plusvic/yara"
 
 VIRTUALBOX_REP="deb http://download.virtualbox.org/virtualbox/debian $RELEASE contrib"
@@ -191,8 +195,8 @@ build_yara(){
 
 build_volatility(){
     wget $VOLATILITY_URL
-    tar xvf volatility-2.4.tar.gz
-    cd volatility-2.4/
+    tar xvf $VOLATILITY_VERSION_LONG.tar.gz
+    cd $VOLATILITY_VERSION_LONG/
     $SUDO python setup.py build
     $SUDO python setup.py install
     return 0
@@ -269,31 +273,32 @@ update_cuckoo_config(){
 }
 
 create_cuckoo_startup_scripts(){
-    $SUDO rm /root/cuckoo-start.sh
-    $SUDO rm /root/cuckoo-kill.sh
-    $SUDO echo "#!/bin/bash" >> /root/cuckoo-start.sh
-    $SUDO echo "# Cuckoo run script" >> /root/cuckoo-start.sh
-    $SUDO echo "#!/bin/bash" >> /root/cuckoo-kill.sh
-    $SUDO echo "# Cuckoo run script" >> /root/cuckoo-kill.sh
-    $SUDO echo "killall cuckoo" >> /root/cuckoo-start.sh
-    $SUDO echo "pkill -f 'cuckoo web runserver'" >> /root/cuckoo-start.sh
+    $SUDO rm $START_SCRIPT
+    $SUDO rm $START_SCRIPT
+    $SUDO echo "#!/bin/bash" >> $START_SCRIPT
+    $SUDO echo "# Cuckoo run script" >> $START_SCRIPT
+    $SUDO echo "#!/bin/bash" >> $KILL_SCRIPT
+    $SUDO echo "# Cuckoo run script" >> $KILL_SCRIPT
+    $SUDO echo "killall cuckoo" >> $START_SCRIPT
+    $SUDO echo "pkill -f 'cuckoo web runserver'" >> $START_SCRIPT
 
-    $SUDO echo "vboxmanage dhcpserver modify --ifname $VIRTUALBOX_INT_NAME --disable" >> /root/cuckoo-start.sh
-    $SUDO echo "vboxmanage hostonlyif ipconfig $VIRTUALBOX_INT_NAME --ip $VIRTUALBOX_INT_ADDR --netmask $VIRTUALBOX_INT_SUBNET" >> /root/cuckoo-start.sh
-    $SUDO echo "iptables -A FORWARD -o $INTERNET_INT_NAME -i $VIRTUALBOX_INT_NAME -s $VIRTUALBOX_INT_NETWORK -m conntrack --ctstate NEW -j ACCEPT" >> /root/cuckoo-start.sh
-    $SUDO echo "iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT" >> /root/cuckoo-start.sh
-    $SUDO echo "iptables -A POSTROUTING -t nat -j MASQUERADE" >> /root/cuckoo-start.sh
-    $SUDO echo "sysctl -w net.ipv4.ip_forward=1" >> /root/cuckoo-start.sh
+    $SUDO echo "#cuckoo rooter -g cuckoo" >> $START_SCRIPT
+    $SUDO echo "vboxmanage dhcpserver modify --ifname $VIRTUALBOX_INT_NAME --disable" >> $START_SCRIPT
+    $SUDO echo "vboxmanage hostonlyif ipconfig $VIRTUALBOX_INT_NAME --ip $VIRTUALBOX_INT_ADDR --netmask $VIRTUALBOX_INT_SUBNET" >> $START_SCRIPT
+    $SUDO echo "iptables -A FORWARD -o $INTERNET_INT_NAME -i $VIRTUALBOX_INT_NAME -s $VIRTUALBOX_INT_NETWORK -m conntrack --ctstate NEW -j ACCEPT" >> $START_SCRIPT
+    $SUDO echo "iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT" >> $START_SCRIPT
+    $SUDO echo "iptables -A POSTROUTING -t nat -j MASQUERADE" >> $START_SCRIPT
+    $SUDO echo "sysctl -w net.ipv4.ip_forward=1" >> $START_SCRIPT
 
-    $SUDO echo "killall cuckoo" >> /root/cuckoo-kill.sh
-    $SUDO echo "pkill -f 'cuckoo web runserver'" >> /root/cuckoo-kill.sh
-    $SUDO echo "runuser -l cuckoo -c 'cuckoo' &" >> /root/cuckoo-start.sh
-    $SUDO echo "runuser -l cuckoo -c 'cuckoo web runserver 0.0.0.0:8000' &" >> /root/cuckoo-start.sh
-    $SUDO echo "runuser -l cuckoo -c 'cuckoo api --host 0.0.0.0 --port 8090' &" >> /root/cuckoo-start.sh
-    $SUDO sed -i "/# By default this script does nothing./ { N; s/# By default this script does nothing./&\n\/root\/cuckoo-start.sh\n/ }" /etc/rc.local
+    $SUDO echo "killall cuckoo" >> $KILL_SCRIPT
+    $SUDO echo "pkill -f 'cuckoo web runserver'" >> $KILL_SCRIPT
+    $SUDO echo "runuser -l cuckoo -c 'cuckoo' &" >> $START_SCRIPT
+    $SUDO echo "runuser -l cuckoo -c 'cuckoo web runserver 0.0.0.0:8000' &" >> $START_SCRIPT
+    $SUDO echo "runuser -l cuckoo -c 'cuckoo api --host 0.0.0.0 --port 8090' &" >> $START_SCRIPT
+    $SUDO sed -i "/# By default this script does nothing./ { N; s/# By default this script does nothing./&\n$START_SCRIPT\n/ }" /etc/rc.local
 
-    $SUDO chmod +x /root/cuckoo-start.sh
-    $SUDO chmod +x /root/cuckoo-kill.sh
+    $SUDO chmod +x $START_SCRIPT
+    $SUDO chmod +x $KILL_SCRIPT
 }
 
 # Init.
