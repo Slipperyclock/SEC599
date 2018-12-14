@@ -39,7 +39,7 @@ CUCKOO_USER="cuckoo"
 CUCKOO_PASSWD="cuckoo"
 CUSTOM_PKGS="tor libguac-client-rdp0 libguac-client-vnc0 libguac-client-ssh0 guacd"
 ORIG_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )
-VOLATILITY_URL="http://downloads.volatilityfoundation.org/releases/$VOLATILITY_VERSION_SHORT/$VOLATILITY_VERSION_LONG.tar.gz"
+VOLATILITY_URL="http://downloads.volatilityfoundation.org/releases/$VOLATILITY_VERSION_SHORT/$VOLATILITY_VERSION_LONG.zip"
 YARA_REPO="https://github.com/plusvic/yara"
 
 VIRTUALBOX_REP="deb http://download.virtualbox.org/virtualbox/debian $RELEASE contrib"
@@ -195,7 +195,7 @@ build_yara(){
 
 build_volatility(){
     wget $VOLATILITY_URL
-    tar xvf $VOLATILITY_VERSION_LONG.tar.gz
+    unzip $VOLATILITY_VERSION_LONG.zip -d $VOLATILITY_VERSION_LONG
     cd $VOLATILITY_VERSION_LONG/
     $SUDO python setup.py build
     $SUDO python setup.py install
