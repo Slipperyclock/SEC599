@@ -196,7 +196,7 @@ build_yara(){
 build_volatility(){
     wget $VOLATILITY_URL
     unzip $VOLATILITY_VERSION_LONG.zip -d $VOLATILITY_VERSION_LONG
-    cd $VOLATILITY_VERSION_LONG/
+    cd $VOLATILITY_VERSION_LONG/volatility-master/
     $SUDO python setup.py build
     $SUDO python setup.py install
     return 0
