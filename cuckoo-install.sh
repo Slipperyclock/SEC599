@@ -263,7 +263,7 @@ poweroff_virtualbox_vm(){
 update_cuckoo_config(){
     # Update IP address of result server
     sed -i "s/192.168.56.1/${VIRTUALBOX_INT_ADDR}/g" /home/$CUCKOO_USER/.cuckoo/conf/cuckoo.conf
-    sed -i "/\[remotecontrol\]\nenabled = no/{ N; s/.*/\[remotecontrol\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/cuckoo.conf
+    sed -i "/\[remotecontrol\]\n\nenabled = no/{ N; s/.*/\[remotecontrol\]\n\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/cuckoo.conf
     sed -i "s/192.168.56.1/${VIRTUALBOX_INT_ADDR}/g" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
     sed -i "s/whitelist_dns = no/whitelist_dns = yes/g" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
     sed -i "/\[virustotal\]/{ N; s/.*/\[virustotal\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
@@ -300,8 +300,11 @@ create_cuckoo_startup_scripts(){
     $SUDO echo "runuser -l cuckoo -c 'cuckoo' &" >> $START_SCRIPT
     $SUDO echo "runuser -l cuckoo -c 'cuckoo web runserver 0.0.0.0:8000' &" >> $START_SCRIPT
     $SUDO echo "runuser -l cuckoo -c 'cuckoo api --host 0.0.0.0 --port 8090' &" >> $START_SCRIPT
+    if [ -e /etc/rc.local ] ; then
     $SUDO sed -i "/# By default this script does nothing./ { N; s/# By default this script does nothing./&\n$START_SCRIPT\n/ }" /etc/rc.local
-
+    else
+    $SUDO echo -e "\n$START_SCRIPT\n" > /etc/rc.local
+    fi
     $SUDO chmod +x $START_SCRIPT
     $SUDO chmod +x $KILL_SCRIPT
 }
