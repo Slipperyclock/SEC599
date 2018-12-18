@@ -71,3 +71,4 @@ www.download.windowsupdate.com
 fonts.googleapis.com
 ocsp.pki.goog
 ocsp.digicert.com
+ocsp.entrust.net
