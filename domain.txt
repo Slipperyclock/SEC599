@@ -72,3 +72,5 @@ fonts.googleapis.com
 ocsp.pki.goog
 ocsp.digicert.com
 ocsp.entrust.net
+adobe.com
+rna-pdf-resource.acrobat.com
