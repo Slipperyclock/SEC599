@@ -7,6 +7,7 @@ nsatc.net
 au-msedge.net
 windows.com
 onenote.net
+cdn.onenote.net
 windowsupdate.com
 download.windowsupdate.com
 gvt1.com
@@ -35,7 +36,6 @@ c-msedge.net
 nsatc.net
 au-msedge.net
 windows.com
-onenote.net
 windowsupdate.com
 download.windowsupdate.com
 gvt1.com
@@ -56,3 +56,12 @@ edgecastdns.net
 akadns.net
 skype.com
 digicert.com
+www.msftconnecttest.com
+go.microsoft.com
+dmd.metaservices.microsoft.com
+tile-service.weather.microsoft.com
+cdn.content.prod.cms.msn.com
+store-images.microsoft.com
+pti.store.microsoft.com
+client.wns.windows.com
+assets.msn.com
