@@ -263,7 +263,7 @@ poweroff_virtualbox_vm(){
 update_cuckoo_config(){
     # Update IP address of result server
     sed -i "s/192.168.56.1/${VIRTUALBOX_INT_ADDR}/g" /home/$CUCKOO_USER/.cuckoo/conf/cuckoo.conf
-    sed -i "/\[remotecontrol\]/{ N; s/.*/\[remotecontrol\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/cuckoo.conf    
+    sed -i "/\[remotecontrol\]\nenabled = no/{ N; s/.*/\[remotecontrol\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/cuckoo.conf
     sed -i "s/192.168.56.1/${VIRTUALBOX_INT_ADDR}/g" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
     sed -i "s/whitelist_dns = no/whitelist_dns = yes/g" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
     sed -i "/\[virustotal\]/{ N; s/.*/\[virustotal\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
@@ -273,6 +273,8 @@ update_cuckoo_config(){
     sed -i "/\[mongodb\]/{ N; s/.*/\[mongodb\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/reporting.conf
     sed -i 's/"192.168.56.1"/"${VIRTUALBOX_INT_ADDR}"/g' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
     sed -i '/DHCPServer/d' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
+    # Use default whitelist
+    wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O "/home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt"
 }
 
 create_cuckoo_startup_scripts(){
