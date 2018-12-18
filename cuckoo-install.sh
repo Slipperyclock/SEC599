@@ -263,8 +263,10 @@ poweroff_virtualbox_vm(){
 update_cuckoo_config(){
     # Update IP address of result server
     sed -i "s/192.168.56.1/${VIRTUALBOX_INT_ADDR}/g" /home/$CUCKOO_USER/.cuckoo/conf/cuckoo.conf
+    sed -i "/\[remotecontrol\]/{ N; s/.*/\[remotecontrol\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/reporting.conf    
     sed -i "s/192.168.56.1/${VIRTUALBOX_INT_ADDR}/g" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
-
+    sed -i "s/whitelist_dns = no/whitelist_dns = yes/g" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
+    sed -i "/\[virustotal\]/{ N; s/.*/\[virustotal\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
     # Update VM settings
     sed -i "s/label = cuckoo1/label = ${CUCKOO_GUEST_NAME}/g" /home/$CUCKOO_USER/.cuckoo/conf/virtualbox.conf
     sed -i "s/ip = 192.168.56.101/ip = ${CUCKOO_GUEST_IP}/g" /home/$CUCKOO_USER/.cuckoo/conf/virtualbox.conf
