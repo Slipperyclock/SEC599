@@ -303,7 +303,9 @@ create_cuckoo_startup_scripts(){
     if [ -e /etc/rc.local ] ; then
     $SUDO sed -i "/# By default this script does nothing./ { N; s/# By default this script does nothing./&\n$START_SCRIPT\n/ }" /etc/rc.local
     else
-    $SUDO echo -e "\n$START_SCRIPT\n" > /etc/rc.local
+    $SUDO echo -e "#!/bin/bash" > /etc/rc.local
+    $SUDO echo -e "\n$START_SCRIPT\n" >> /etc/rc.local
+    $SUDO chmod +x /etc/rc.local
     fi
     $SUDO chmod +x $START_SCRIPT
     $SUDO chmod +x $KILL_SCRIPT
