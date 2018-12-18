@@ -65,3 +65,9 @@ store-images.microsoft.com
 pti.store.microsoft.com
 client.wns.windows.com
 assets.msn.com
+ocsp.godaddy.com	
+fonts.gstatic.com
+www.download.windowsupdate.com
+fonts.googleapis.com
+ocsp.pki.goog
+ocsp.digicert.com
