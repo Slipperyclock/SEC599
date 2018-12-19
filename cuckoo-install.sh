@@ -276,7 +276,7 @@ create_cuckoo_startup_scripts(){
     $SUDO echo "killall cuckoo" >> $START_SCRIPT
     $SUDO echo "pkill -f 'cuckoo web runserver'" >> $START_SCRIPT
 
-    $SUDO echo "cuckoo rooter -g cuckoo" >> $START_SCRIPT
+    $SUDO echo "cuckoo rooter -g cuckoo &" >> $START_SCRIPT
     $SUDO echo "vboxmanage dhcpserver modify --ifname $VIRTUALBOX_INT_NAME --disable" >> $START_SCRIPT
     $SUDO echo "vboxmanage hostonlyif ipconfig $VIRTUALBOX_INT_NAME --ip $VIRTUALBOX_INT_ADDR --netmask $VIRTUALBOX_INT_SUBNET" >> $START_SCRIPT
     $SUDO echo "iptables -A FORWARD -o $INTERNET_INT_NAME -i $VIRTUALBOX_INT_NAME -s $VIRTUALBOX_INT_NETWORK -m conntrack --ctstate NEW -j ACCEPT" >> $START_SCRIPT
@@ -290,7 +290,7 @@ create_cuckoo_startup_scripts(){
     $SUDO echo "runuser -l cuckoo -c 'cuckoo web runserver 0.0.0.0:8000' &" >> $START_SCRIPT
     $SUDO echo "runuser -l cuckoo -c 'cuckoo api --host 0.0.0.0 --port 8090' &" >> $START_SCRIPT
 
-    $SUDO echo -e "\n@reboot root sleep 120; $START_SCRIPT\n" >> /etc/crontab
+    $SUDO echo -e "\n@reboot root sleep 120; $START_SCRIPT &\n" >> /etc/crontab
 
     $SUDO chmod +x $START_SCRIPT
     $SUDO chmod +x $KILL_SCRIPT
