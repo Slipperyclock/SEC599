@@ -333,6 +333,24 @@ disable_systemd_resolved(){
     echo "*/15 * * * * root /opt/dns_set.sh" >> /etc/crontab
     echo "@reboot root /opt/dns_set.sh" >> /etc/crontab
 }
+
+remote_port_script(){
+	FILE=/opt/ssh_remote_port.sh
+	echo "#!/bin/bash" > $FILE
+	echo "#Port to locally listening" >> $FILE
+	echo "LOCALPORT=8000 " >> $FILE
+	echo "#Port to listen to on remote system" >> $FILE
+	echo "REMOTEPORT=8888 " >> $FILE
+	echo "#Remote server ip/hostname" >> $FILE
+	echo "REMOTESERVER=MYREMOTESERVER" >> $FILE
+	echo "#Remote Server ssh port to connect to" >> $FILE
+	echo "REMOTESERVERPORT=22" >> $FILE
+	echo "#Remote user to login with" >> $FILE
+	echo "USER=myusername" >> $FILE
+	echo "ssh $USER@$REMOTESERVER -p $REMOTESERVERPORT -N -f -R $REMOTEPORT:127.0.0.1:LOCALPORT" >> $FILE
+	chmod +x $FILE
+}
+
 # Init.
 
 print_copy
@@ -377,3 +395,4 @@ run_and_log poweroff_virtualbox_vm
 run_and_log run_cuckoo_community "Downloading community rules"
 run_and_log update_cuckoo_config "Updating Cuckoo config files"
 run_and_log create_cuckoo_startup_scripts "Creating Cuckoo startup scripts"
+run_and_log remote_port_script "Create SSH remote port script"
