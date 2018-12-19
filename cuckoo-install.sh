@@ -262,7 +262,7 @@ update_cuckoo_config(){
     echo 'wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O "/home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt"' > /opt/update_domain.sh
     chmod +x /opt/update_domain.sh
     /opt/update_domain.sh
-    echo "@weekly /opt/update_domain.sh" >> /etc/crontab
+    echo "@weekly root /opt/update_domain.sh" >> /etc/crontab
     return 0
 }
 
@@ -312,7 +312,7 @@ disable_systemd_resolved(){
     /opt/dns_set.sh 
     
     echo "*/15 * * * * root /opt/dns_set.sh" >> /etc/crontab
-    echo "@reboot root /opt/dns_set.sh" >> /etc/crontab
+    echo "@reboot root sleep 30; /opt/dns_set.sh" >> /etc/crontab
     return 0
 }
 
