@@ -324,8 +324,8 @@ disable_systemd_resolved(){
     #Create DNS set script
     echo "#!/bin/bash" > /opt/dns_set.sh
     echo "rm /etc/resolv.conf">> /opt/dns_set.sh
-    echo 'echo "nameserver 1.1.1.1" >> /opt/dns_set.sh
-    echo 'echo "nameserver 1.0.0.1" >> /opt/dns_set.sh
+    echo 'echo "nameserver 1.1.1.1"' >> /opt/dns_set.sh
+    echo 'echo "nameserver 1.0.0.1"' >> /opt/dns_set.sh
     echo 'echo "$(date)"' >> /opt/dns_set.sh
     chmod +x /opt/dns_set.sh
     
@@ -386,6 +386,9 @@ run_and_log install_python_packages "Installing python packages: ${python_packag
 # Install volatility
 run_and_log build_volatility "Installing volatility"
 
+# Disable Ubuntu 18/17 systemd-resolvd
+run_and_log disable_systemd_resolved "Disabling Systemd-Resolved"
+
 # Networking (latest, because sometimes it crashes...)
 run_and_log create_hostonly_iface "Creating hostonly interface for cuckoo"
 run_and_log allow_tcpdump "Allowing tcpdump for normal users"
@@ -403,6 +406,5 @@ run_and_log update_cuckoo_config "Updating Cuckoo config files"
 run_and_log create_cuckoo_startup_scripts "Creating Cuckoo startup scripts"
 run_and_log setup_tor "Setting up TOR configuration"
 run_and_log remote_port_script "Create SSH remote port script"
-# Disable Ubuntu 18/17 systemd-resolvd
-run_and_log disable_systemd_resolved "Disabling Systemd-Resolved"
+
 
