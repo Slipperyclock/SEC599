@@ -351,6 +351,11 @@ remote_port_script(){
 	chmod +x $FILE
 }
 
+setup_tor(){
+	echo "TransPort $VIRTUALBOX_INT_ADDR:9040" >> /etc/tor/torrc
+	echo "DNSPort $VIRTUALBOX_INT_ADDR:5353" >> /etc/tor/torrc
+	sed -i " N;/\[tor\]\n/{ N; s/.*/\[tor\]\n\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
+}
 # Init.
 
 print_copy
@@ -395,4 +400,5 @@ run_and_log poweroff_virtualbox_vm
 run_and_log run_cuckoo_community "Downloading community rules"
 run_and_log update_cuckoo_config "Updating Cuckoo config files"
 run_and_log create_cuckoo_startup_scripts "Creating Cuckoo startup scripts"
+run_and_log setup_tor "Setting up TOR configuration"
 run_and_log remote_port_script "Create SSH remote port script"
