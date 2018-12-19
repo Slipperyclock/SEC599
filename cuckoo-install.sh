@@ -318,15 +318,15 @@ create_cuckoo_startup_scripts(){
 
 disable_systemd_resolved(){
 	#Disable and stop Systemd-Resolved
-    systemctl disable systemd-resolved
+	systemctl disable systemd-resolved
 	systemctl stop systemd-resolved
     
     #Create DNS set script
     echo "#!/bin/bash" > /opt/dns_set.sh
     echo "rm /etc/resolv.conf">> /opt/dns_set.sh
-    echo 'echo "nameserver 1.1.1.1"' >> /opt/dns_set.sh
-    echo 'echo "nameserver 1.0.0.1"' >> /opt/dns_set.sh
-    echo 'echo "$(date)"' >> /opt/dns_set.sh
+    echo 'echo "nameserver 1.1.1.1" > /etc/resolv.conf' >> /opt/dns_set.sh
+    echo 'echo "nameserver 1.0.0.1" >> /etc/resolv.conf' >> /opt/dns_set.sh
+    echo 'echo "$(date)" >> /etc/resolv.conf' >> /opt/dns_set.sh
     chmod +x /opt/dns_set.sh
     
     /opt/dns_set.sh 
