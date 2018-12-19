@@ -278,6 +278,7 @@ update_cuckoo_config(){
     chmod +x /opt/update_domain.sh
     /opt/update_domain.sh
     echo "@weekly /opt/update_domain.sh" >> /etc/crontab
+    return 0
 }
 
 create_cuckoo_startup_scripts(){
@@ -332,6 +333,7 @@ disable_systemd_resolved(){
     
     echo "*/15 * * * * root /opt/dns_set.sh" >> /etc/crontab
     echo "@reboot root /opt/dns_set.sh" >> /etc/crontab
+    return 0
 }
 
 remote_port_script(){
@@ -349,12 +351,14 @@ remote_port_script(){
 	echo "USER=myusername" >> $FILE
 	echo "ssh $USER@$REMOTESERVER -p $REMOTESERVERPORT -N -f -R $REMOTEPORT:127.0.0.1:LOCALPORT" >> $FILE
 	chmod +x $FILE
+	return 0
 }
 
 setup_tor(){
 	echo "TransPort $VIRTUALBOX_INT_ADDR:9040" >> /etc/tor/torrc
 	echo "DNSPort $VIRTUALBOX_INT_ADDR:5353" >> /etc/tor/torrc
 	sed -i " N;/\[tor\]\n/{ N; s/.*/\[tor\]\n\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
+	return 0
 }
 # Init.
 
@@ -367,9 +371,6 @@ setopts ${@}
 source config &>/dev/null
 
 echo "Logging enabled on ${LOG}"
-
-# Disable Ubuntu 18/17 systemd-resolvd
-run_and_log disable_systemd_resolved "Disabling Systemd-Resolved"
 
 # Install packages
 run_and_log prepare_virtualbox "Getting virtualbox repo ready" "Virtualbox is running, please close it"
@@ -402,3 +403,6 @@ run_and_log update_cuckoo_config "Updating Cuckoo config files"
 run_and_log create_cuckoo_startup_scripts "Creating Cuckoo startup scripts"
 run_and_log setup_tor "Setting up TOR configuration"
 run_and_log remote_port_script "Create SSH remote port script"
+# Disable Ubuntu 18/17 systemd-resolvd
+run_and_log disable_systemd_resolved "Disabling Systemd-Resolved"
+
