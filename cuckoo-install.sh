@@ -326,7 +326,7 @@ disable_systemd_resolved(){
     echo "rm /etc/resolv.conf">> /opt/dns_set.sh
     echo 'echo "nameserver 1.1.1.1" > /etc/resolv.conf' >> /opt/dns_set.sh
     echo 'echo "nameserver 1.0.0.1" >> /etc/resolv.conf' >> /opt/dns_set.sh
-    echo 'echo "$(date)" >> /etc/resolv.conf' >> /opt/dns_set.sh
+    echo 'echo "#$(date)" >> /etc/resolv.conf' >> /opt/dns_set.sh
     chmod +x /opt/dns_set.sh
     
     /opt/dns_set.sh 
@@ -349,7 +349,7 @@ remote_port_script(){
 	echo "REMOTESERVERPORT=22" >> $FILE
 	echo "#Remote user to login with" >> $FILE
 	echo "USER=myusername" >> $FILE
-	echo "ssh $USER@$REMOTESERVER -p $REMOTESERVERPORT -N -f -R $REMOTEPORT:127.0.0.1:LOCALPORT" >> $FILE
+	echo "ssh \$USER@\$REMOTESERVER -p \$REMOTESERVERPORT -N -f -R \$REMOTEPORT:127.0.0.1:\$LOCALPORT" >> $FILE
 	chmod +x $FILE
 	return 0
 }
@@ -357,7 +357,7 @@ remote_port_script(){
 setup_tor(){
 	echo "TransPort $VIRTUALBOX_INT_ADDR:9040" >> /etc/tor/torrc
 	echo "DNSPort $VIRTUALBOX_INT_ADDR:5353" >> /etc/tor/torrc
-	sed -i " N;/\[tor\]\n/{ N; s/.*/\[tor\]\n\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
+	sed -i " N;N;/\[tor\]\n/{ N; s/.*/\[tor\]\n\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
 	return 0
 }
 # Init.
