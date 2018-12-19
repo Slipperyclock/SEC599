@@ -28,7 +28,6 @@ edgecastdns.net
 akadns.net
 skype.com
 digicert.com
-microsoft.com
 edgesuite.net
 akamai.net
 akamaiedge.net
@@ -69,8 +68,19 @@ ocsp.godaddy.com
 fonts.gstatic.com
 www.download.windowsupdate.com
 fonts.googleapis.com
+update.googleapis.com
 ocsp.pki.goog
 ocsp.digicert.com
 ocsp.entrust.net
+ocsp.globalsign.com
 adobe.com
 rna-pdf-resource.acrobat.com
+officecdn.microsoft.com
+config.edge.skype.com
+stats.g.doubleclick.net
+officecdn.microsoft.com.edgesuite.net
+nexusrules.officeapps.live.com
+armmf.adobe.com
+ocsp.comodoca4.com
+client-office365-tas.msedge.net
+mrodevicemgr.officeapps.live.com
