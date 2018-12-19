@@ -289,14 +289,9 @@ create_cuckoo_startup_scripts(){
     $SUDO echo "runuser -l cuckoo -c 'cuckoo' &" >> $START_SCRIPT
     $SUDO echo "runuser -l cuckoo -c 'cuckoo web runserver 0.0.0.0:8000' &" >> $START_SCRIPT
     $SUDO echo "runuser -l cuckoo -c 'cuckoo api --host 0.0.0.0 --port 8090' &" >> $START_SCRIPT
-    if [ -e /etc/rc.local ] ; then
-    $SUDO sed -i "/# By default this script does nothing./ { N; s/# By default this script does nothing./&\n$START_SCRIPT\n/ }" /etc/rc.local
-    else
-    $SUDO echo -e "#!/bin/bash" > /etc/rc.local
-    $SUDO echo -e "\n$START_SCRIPT\n" >> /etc/rc.local
-    $SUDO echo -e "exit 0" >> /etc/rc.local
-    $SUDO chmod +x /etc/rc.local
-    fi
+
+    $SUDO echo -e "\n@reboot root sleep 120; $START_SCRIPT\n" >> /etc/crontab
+
     $SUDO chmod +x $START_SCRIPT
     $SUDO chmod +x $KILL_SCRIPT
 }
