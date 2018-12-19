@@ -273,8 +273,11 @@ update_cuckoo_config(){
     sed -i "/\[mongodb\]/{ N; s/.*/\[mongodb\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/reporting.conf
     sed -i 's/"192.168.56.1"/"${VIRTUALBOX_INT_ADDR}"/g' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
     sed -i '/DHCPServer/d' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
-    # Use default whitelist
-    wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O "/home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt"
+    # Use default whitelist    
+    echo 'wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O "/home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt"' /opt/update_domain.sh
+    chmod +x /opt/update_domain.sh
+    /opt/update_domain.sh
+    echo "@weekly /opt/update_domain.sh" >> /etc/crontab
 }
 
 create_cuckoo_startup_scripts(){
@@ -305,12 +308,31 @@ create_cuckoo_startup_scripts(){
     else
     $SUDO echo -e "#!/bin/bash" > /etc/rc.local
     $SUDO echo -e "\n$START_SCRIPT\n" >> /etc/rc.local
+    $SUDO echo -e "exit 0" >> /etc/rc.local
     $SUDO chmod +x /etc/rc.local
     fi
     $SUDO chmod +x $START_SCRIPT
     $SUDO chmod +x $KILL_SCRIPT
 }
 
+disable_systemd_resolved(){
+	#Disable and stop Systemd-Resolved
+    systemctl disable systemd-resolved
+	systemctl stop systemd-resolved
+    
+    #Create DNS set script
+    echo "#!/bin/bash" > /opt/dns_set.sh
+    echo "rm /etc/resolv.conf">> /opt/dns_set.sh
+    echo 'echo "nameserver 1.1.1.1" >> /opt/dns_set.sh
+    echo 'echo "nameserver 1.0.0.1" >> /opt/dns_set.sh
+    echo 'echo "$(date)"' >> /opt/dns_set.sh
+    chmod +x /opt/dns_set.sh
+    
+    /opt/dns_set.sh 
+    
+    echo "*/15 * * * * root /opt/dns_set.sh" >> /etc/crontab
+    echo "@reboot root /opt/dns_set.sh" >> /etc/crontab
+}
 # Init.
 
 print_copy
@@ -322,6 +344,9 @@ setopts ${@}
 source config &>/dev/null
 
 echo "Logging enabled on ${LOG}"
+
+# Disable Ubuntu 18/17 systemd-resolvd
+run_and_log disable_systemd_resolved "Disabling Systemd-Resolved"
 
 # Install packages
 run_and_log prepare_virtualbox "Getting virtualbox repo ready" "Virtualbox is running, please close it"
