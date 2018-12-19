@@ -259,7 +259,7 @@ update_cuckoo_config(){
     sed -i 's/"192.168.56.1"/"${VIRTUALBOX_INT_ADDR}"/g' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
     sed -i '/DHCPServer/d' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
     # Use default whitelist    
-    echo 'wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O "/home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt"' /opt/update_domain.sh
+    echo 'wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O "/home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt"' > /opt/update_domain.sh
     chmod +x /opt/update_domain.sh
     /opt/update_domain.sh
     echo "@weekly /opt/update_domain.sh" >> /etc/crontab
