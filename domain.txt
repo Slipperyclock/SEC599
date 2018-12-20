@@ -84,3 +84,6 @@ armmf.adobe.com
 ocsp.comodoca4.com
 client-office365-tas.msedge.net
 mrodevicemgr.officeapps.live.com
+ssl.google-analytics.com
+ardownload.adobe.com
+_apple-mobdev._tcp.local
