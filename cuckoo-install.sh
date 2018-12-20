@@ -61,6 +61,7 @@ cat <<EO
 │ Didier Stevens - <dstevens@nviso.be                     |
 │            Buguroo Offensive Security - 2015            │
 │            NVISO - 2017-2018                            │
+│            Slipperyclock - 2018-2019                    │
 └─────────────────────────────────────────────────────────┘
 EO
 }
