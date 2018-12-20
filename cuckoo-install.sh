@@ -15,6 +15,7 @@ VOLATILITY_VERSION_LONG="volatility-2.6"
 VOLATILITY_VERSION_SHORT="2.6"
 START_SCRIPT="/root/cuckoo-start.sh"
 KILL_SCRIPT="/root/cuckoo-kill.sh"
+CONFIG_SCRIPTS_DIR="/opt/cuckoo-configs"
 
 # Base variables. Only change these if you know what you are doing...
 SUDO="sudo"
@@ -138,6 +139,7 @@ create_cuckoo_user(){
     $SUDO adduser --disabled-login -gecos "" ${CUCKOO_USER}
     echo -e "${CUCKOO_PASSWD}\n${CUCKOO_PASSWD}" | $SUDO passwd ${CUCKOO_USER}
     $SUDO usermod -G vboxusers ${CUCKOO_USER}
+    $SUDO mkdir $CONFIG_SCRIPTS_DIR
     return 0
 }
 
