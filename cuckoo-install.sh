@@ -353,7 +353,7 @@ setup_suricata(){
 	chmod u+s /usr/bin/suricata
 	# Set Processing.conf to enable Suricata
 	sed -i "/\[suricata\]/{ N; s/.*/\[suricata\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
-	sed -i "s/  filename: \/var\/run\/suricata-command.socket/  filename: \/var\/run\/suricata\/cuckoo.socket/g" /etc/suricata.yaml
+	sed -i "s/  filename: \/var\/run\/suricata-command.socket/  filename: \/var\/run\/suricata\/cuckoo.socket/g" /etc/suricata/suricata.yaml
 	sed -i "s/#run-as:/run-as:/" /etc/suricata/suricata.yaml
 	sed -i "s/#  user: suri/  user: cuckoo/" /etc/suricata/suricata.yaml
 	sed -i "s/#  user: suri/  user: cuckoo/" /etc/suricata/suricata.yaml
