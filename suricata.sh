@@ -6,7 +6,7 @@
 # $ sudo apt-get install suricata
 # 
 # Enable Suricata in Processing.conf
-# Set socket = /var/run/suricata/cuckoo.socket
+# Set socket = /var/run/suricata/cuckoo.socket # not needed with blank socket set in 
 #
 # Set Suricata to run w/ root for cuckoo user.
 # $ chmod u+s /usr/bin/suricata.generic
