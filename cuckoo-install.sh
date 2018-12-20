@@ -259,7 +259,7 @@ update_cuckoo_config(){
     sed -i 's/"192.168.56.1"/"${VIRTUALBOX_INT_ADDR}"/g' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
     sed -i '/DHCPServer/d' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
     # Use default whitelist    
-    echo 'wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O "/home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt"' > /opt/update_domain.sh
+    echo 'wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O /home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt' > /opt/update_domain.sh
     chmod +x /opt/update_domain.sh
     /opt/update_domain.sh
     echo "@weekly root /opt/update_domain.sh" >> /etc/crontab
@@ -275,7 +275,8 @@ create_cuckoo_startup_scripts(){
     $SUDO echo "# Cuckoo run script" >> $KILL_SCRIPT
     $SUDO echo "killall cuckoo" >> $START_SCRIPT
     $SUDO echo "pkill -f 'cuckoo web runserver'" >> $START_SCRIPT
-
+    $SUDO echo "systemctl stop tor" >> $START_SCRIPT
+    $SUDO echo "systemctl start tor" >> $START_SCRIPT
     $SUDO echo "cuckoo rooter -g cuckoo &" >> $START_SCRIPT
     $SUDO echo "vboxmanage dhcpserver modify --ifname $VIRTUALBOX_INT_NAME --disable" >> $START_SCRIPT
     $SUDO echo "vboxmanage hostonlyif ipconfig $VIRTUALBOX_INT_NAME --ip $VIRTUALBOX_INT_ADDR --netmask $VIRTUALBOX_INT_SUBNET" >> $START_SCRIPT
@@ -337,6 +338,8 @@ remote_port_script(){
 setup_tor(){
 	echo "TransPort $VIRTUALBOX_INT_ADDR:9040" >> /etc/tor/torrc
 	echo "DNSPort $VIRTUALBOX_INT_ADDR:5353" >> /etc/tor/torrc
+	echo "TransPort $VIRTUALBOX_INT_ADDR:9040" >> /usr/share/tor/tor-service-defaults-torrc
+	echo "DNSPort $VIRTUALBOX_INT_ADDR:5353" >> /usr/share/tor/tor-service-defaults-torrc
 	sed -i " N;N;/\[tor\]\n/{ N; s/.*/\[tor\]\n\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
 	return 0
 }
