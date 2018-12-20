@@ -348,8 +348,8 @@ setup_tor(){
 }
 
 setup_suricata(){
-	apt-get install software-properties-common
-	apt-get install suricata
+	apt-get install software-properties-common -y
+	apt-get install suricata -y
 	chmod u+s /usr/bin/suricata
 	# Set Processing.conf to enable Suricata
 	sed -i "/\[suricata\]/{ N; s/.*/\[suricata\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
