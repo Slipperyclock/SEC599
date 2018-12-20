@@ -259,10 +259,10 @@ update_cuckoo_config(){
     sed -i 's/"192.168.56.1"/"${VIRTUALBOX_INT_ADDR}"/g' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
     sed -i '/DHCPServer/d' /home/$CUCKOO_USER/.config/VirtualBox/VirtualBox.xml
     # Use default whitelist    
-    echo 'wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O /home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt' > /opt/update_domain.sh
-    chmod +x /opt/update_domain.sh
-    /opt/update_domain.sh
-    echo "@weekly root /opt/update_domain.sh" >> /etc/crontab
+    echo 'wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/domain.txt -O /home/$CUCKOO_USER/.cuckoo/whitelist/domain.txt' > /opt/cuckoo-configs/update_domain.sh
+    chmod +x /opt/cuckoo-configs/update_domain.sh
+    /opt/cuckoo-configs/update_domain.sh
+    echo "@weekly root /opt/cuckoo-configs/update_domain.sh" >> /etc/crontab
     return 0
 }
 
@@ -298,27 +298,27 @@ create_cuckoo_startup_scripts(){
 }
 
 disable_systemd_resolved(){
-	#Disable and stop Systemd-Resolved
-	systemctl disable systemd-resolved
-	systemctl stop systemd-resolved
+    #Disable and stop Systemd-Resolved
+    systemctl disable systemd-resolved
+    systemctl stop systemd-resolved
     
     #Create DNS set script
-    echo "#!/bin/bash" > /opt/dns_set.sh
-    echo "rm /etc/resolv.conf">> /opt/dns_set.sh
-    echo 'echo "nameserver 1.1.1.1" > /etc/resolv.conf' >> /opt/dns_set.sh
-    echo 'echo "nameserver 1.0.0.1" >> /etc/resolv.conf' >> /opt/dns_set.sh
-    echo 'echo "#$(date)" >> /etc/resolv.conf' >> /opt/dns_set.sh
-    chmod +x /opt/dns_set.sh
+    echo "#!/bin/bash" > /opt/cuckoo-configs/dns_set.sh
+    echo "rm /etc/resolv.conf">> /opt/cuckoo-configs/dns_set.sh
+    echo 'echo "nameserver 1.1.1.1" > /etc/resolv.conf' >> /opt/cuckoo-configs/dns_set.sh
+    echo 'echo "nameserver 1.0.0.1" >> /etc/resolv.conf' >> /opt/cuckoo-configs/dns_set.sh
+    echo 'echo "#$(date)" >> /etc/resolv.conf' >> /opt/cuckoo-configs/dns_set.sh
+    chmod +x /opt/cuckoo-configs/dns_set.sh
     
-    /opt/dns_set.sh 
+    /opt/cuckoo-configs/dns_set.sh 
     
-    echo "*/15 * * * * root /opt/dns_set.sh" >> /etc/crontab
-    echo "@reboot root sleep 30; /opt/dns_set.sh" >> /etc/crontab
+    echo "*/15 * * * * root /opt/cuckoo-configs/dns_set.sh" >> /etc/crontab
+    echo "@reboot root sleep 30; /opt/cuckoo-configs/dns_set.sh" >> /etc/crontab
     return 0
 }
 
 remote_port_script(){
-	FILE=/opt/ssh_remote_port.sh
+	FILE=/opt/cuckoo-configs/ssh_remote_port.sh
 	echo "#!/bin/bash" > $FILE
 	echo "#Port to locally listening" >> $FILE
 	echo "LOCALPORT=8000 " >> $FILE
@@ -356,7 +356,9 @@ setup_suricata(){
 	sed -i "s/#  user: suri/  user: cuckoo/" /etc/suricata/suricata.yaml
 	sed -i "s/#  group: suri/  group: cuckoo/" /etc/suricata/suricata.yaml
 	sed -i " N; s/  - file-store:\n      enabled: no/  - file-store:\n      enabled: yes/" /etc/suricata/suricata.yaml
-	echo "@reboot root /opt/SEC599/suricata.sh &" >> /etc/crontab
+	wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/suricata.sh -O /opt/cuckoo-configs/suricata.sh
+	chmod +x /opt/cuckoo-configs/suricata.sh
+	echo "@reboot root /opt/cuckoo-configs/suricata.sh &" >> /etc/crontab
 	echo "15 * * * * root /usr/bin/suricatasc -c reload-rules &" >> /etc/crontab
 }
 # Init.
