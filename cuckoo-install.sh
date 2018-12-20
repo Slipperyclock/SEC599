@@ -343,6 +343,22 @@ setup_tor(){
 	sed -i " N;N;/\[tor\]\n/{ N; s/.*/\[tor\]\n\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/routing.conf
 	return 0
 }
+
+setup_suricata(){
+	apt-get install software-properties-common
+	apt-get install suricata
+	chmod u+s /usr/bin/suricata
+	# Set Processing.conf to enable Suricata
+	sed -i "/\[suricata\]/{ N; s/.*/\[suricata\]\nenabled = yes/; }" /home/$CUCKOO_USER/.cuckoo/conf/processing.conf
+	sed -i "s/  filename: \/var\/run\/suricata-command.socket/  filename: \/var\/run\/suricata\/cuckoo.socket/g" /etc/suricata.yaml
+	sed -i "s/#run-as:/run-as:/" /etc/suricata/suricata.yaml
+	sed -i "s/#  user: suri/  user: cuckoo/" /etc/suricata/suricata.yaml
+	sed -i "s/#  user: suri/  user: cuckoo/" /etc/suricata/suricata.yaml
+	sed -i "s/#  group: suri/  group: cuckoo/" /etc/suricata/suricata.yaml
+	sed -i " N; s/  - file-store:\n      enabled: no/  - file-store:\n      enabled: yes/" /etc/suricata/suricata.yaml
+	echo "@reboot root /opt/SEC599/suricata.sh &" >> /etc/crontab
+	echo "15 * * * * root /usr/bin/suricatasc -c reload-rules &" >> /etc/crontab
+}
 # Init.
 
 print_copy
@@ -389,5 +405,6 @@ run_and_log update_cuckoo_config "Updating Cuckoo config files"
 run_and_log create_cuckoo_startup_scripts "Creating Cuckoo startup scripts"
 run_and_log setup_tor "Setting up TOR configuration"
 run_and_log remote_port_script "Create SSH remote port script"
+run_and_log setup_suricata "Setup Suricata and Cuckoo"
 
 
