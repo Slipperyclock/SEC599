@@ -359,6 +359,7 @@ setup_suricata(){
 	sed -i "s/#  user: suri/  user: cuckoo/" /etc/suricata/suricata.yaml
 	sed -i "s/#  group: suri/  group: cuckoo/" /etc/suricata/suricata.yaml
 	sed -i " N; s/  - file-store:\n      enabled: no/  - file-store:\n      enabled: yes/" /etc/suricata/suricata.yaml
+	sed -i " N; s/  - file-log:\n      enabled: no/  - file-log:\n      enabled: yes/" /etc/suricata/suricata.yaml
 	wget https://raw.githubusercontent.com/Slipperyclock/SEC599/master/suricata.sh -O /opt/cuckoo-configs/suricata.sh
 	chmod +x /opt/cuckoo-configs/suricata.sh
 	echo "@reboot root /opt/cuckoo-configs/suricata.sh &" >> /etc/crontab
