@@ -87,3 +87,5 @@ mrodevicemgr.officeapps.live.com
 ssl.google-analytics.com
 ardownload.adobe.com
 _apple-mobdev._tcp.local
+ocsp2.globalsign.com
+ocsp.apple.com
