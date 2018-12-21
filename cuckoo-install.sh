@@ -412,5 +412,5 @@ run_and_log create_cuckoo_startup_scripts "Creating Cuckoo startup scripts"
 run_and_log setup_tor "Setting up TOR configuration"
 run_and_log remote_port_script "Create SSH remote port script"
 run_and_log setup_suricata "Setup Suricata and Cuckoo"
-
+echo -e "${log_icon_ok} For Remote Control support run 'apt install virtualbox-ext-pack' "
 
