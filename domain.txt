@@ -101,3 +101,4 @@ clients2.google.com
 mobile.pipe.aria.microsoft.com
 nexus.officeapps.live.com
 watson.microsoft.com
+www.godaddy.com
