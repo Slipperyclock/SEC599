@@ -102,3 +102,7 @@ mobile.pipe.aria.microsoft.com
 nexus.officeapps.live.com
 watson.microsoft.com
 www.godaddy.com
+swcatalog.apple.com
+oneclient.sfx.ms
+swpost.apple.com
+swdist.apple.com
